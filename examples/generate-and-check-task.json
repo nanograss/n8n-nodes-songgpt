@@ -1,0 +1,106 @@
+{
+  "name": "SongGPT - Generate and Check Task",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2c6e81a4-0b7f-4d2a-9a1e-5c8f3d21a904",
+      "name": "When clicking Execute workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "generate",
+        "mode": "simple",
+        "model": "songgpt-v1",
+        "prompt": "A calm instrumental lo-fi track for a rainy study session",
+        "instrumental": true,
+        "style": "Warm keys, soft drums, relaxed tempo"
+      },
+      "id": "8a41d2c9-6f0e-4b73-9c55-1e0b7a29d318",
+      "name": "Generate Music",
+      "type": "n8n-nodes-songgpt.songGpt",
+      "typeVersion": 1,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 120,
+        "unit": "seconds"
+      },
+      "id": "b17f5e30-9c24-4a81-8d66-4f2c0e18b547",
+      "name": "Wait for generation",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "taskStatus",
+        "uniqueIds": "={{$json.unique_id}}"
+      },
+      "id": "c93a6d14-2e58-4f09-a7b1-6d4e8c20f672",
+      "name": "Get Task Status",
+      "type": "n8n-nodes-songgpt.songGpt",
+      "typeVersion": 1,
+      "position": [
+        960,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Generate Music",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Music": {
+      "main": [
+        [
+          {
+            "node": "Wait for generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for generation": {
+      "main": [
+        [
+          {
+            "node": "Get Task Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a4d81c2e-7b65-4f10-9c3a-2e19d84b0571",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}
